@@ -20,7 +20,7 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    res.send('it works')
+    res.json({message: 'it works'})
 })
 
 app.post('/api/movies', async (req, res) => {
