@@ -4,23 +4,31 @@
 * No part of this assignment has been copied manually or electronically from any other source
 * (including web sites) or distributed to other students.
 *
-* Name: Andrii Sych Student ID: 125752212 Date: 2022-01-22
+* Name: Andrii Sych Student ID: 125752212 Date: 2022-01-28
 * Cyclic Link: https://shy-rose-hedgehog-hem.cyclic.app
 *
 ********************************************************************************/
 const express = require('express')
+const handlebars = require('express-handlebars')
 const cors = require('cors')
 require('dotenv').config()
 const MoviesDB = require("./modules/moviesDB.js");
 const db = new MoviesDB();
 
 const app = express()
+app.use(express.static('public'))
+
+app.set('view engine', 'hbs');
+app.engine('hbs', handlebars.engine({
+    layoutsDir: __dirname + '/views/layouts',
+    extname: '.hbs'
+}));
 
 app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    res.json({message: 'it works'})
+    res.render('index')
 })
 
 app.post('/api/movies', async (req, res) => {
@@ -46,7 +54,7 @@ app.get('/api/movies', async (req, res) => {
 app.get('/api/movies/:id', async (req, res) => {
     try {
         const movie = await db.getMovieById(req.params.id)
-        res.status(200).json({foundMovie: movie})
+        res.status(200).json(movie)
     }
     catch(err) {
         res.status(500).json({message: `no movie found with ${req.params.id} id`})
